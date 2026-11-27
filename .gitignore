@@ -36,3 +36,6 @@ venv/
 .omc/
 .fablize/
 .claude/settings.local.json
+
+# 올릴지 팀이 정하기 전까지 제외
+01_전략/DDBM_캔버스_초안.md
