@@ -1,12 +1,38 @@
-# 수집·가공 데이터: 기사 본문 저작권이 언론사에 있고 용량도 커서 올리지 않는다
-data/
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
 
-# 계정 정보, 회사·교육 자료, 제출 서류
+# 데이터: 기사 본문 저작권이 언론사에 있고 용량도 크다 (catalog과 samples는 올린다)
+09_데이터/raw/**
+09_데이터/interim/**
+09_데이터/processed/**
+11_실험/experiments/*
+11_실험/artifacts/*
+!09_데이터/raw/**/
+!09_데이터/**/.gitkeep
+!11_실험/experiments/.gitkeep
+!11_실험/artifacts/.gitkeep
+
+# 인증키와 계정 정보
+.env
+.env.*
+!.env.example
 계정 및 서버.txt
+
+# 회사·교육 자료, 제출 서류, 회의록
+00_제출/**
+07_원천/**
+06_증빙/회의록/**
+!00_제출/.gitkeep
+!07_원천/**/
+!07_원천/**/.gitkeep
+!06_증빙/회의록/.gitkeep
 *.pdf
 *.hwp
-사전교육/
-제출/
 
-__pycache__/
+# Tool state
 .omc/
+.fablize/
+.claude/settings.local.json

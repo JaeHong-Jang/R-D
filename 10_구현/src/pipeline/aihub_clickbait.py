@@ -5,7 +5,8 @@
     python build_dataset.py --limit 200      # 폴더마다 200건만 (빠른 확인용)
     python build_dataset.py --category EC    # 경제 기사
 
-결과: data/<분야>_train.jsonl, data/<분야>_valid.jsonl (한 줄에 기사 1건)
+원자료: 트라이톤 공모전 폴더의 AI Hub 원본 (용량이 커서 09_데이터/raw 로 복사하지 않고 그 자리에서 읽는다)
+결과: 09_데이터/interim/aihub_clickbait__<분야>_train.jsonl, ..._valid.jsonl (한 줄에 기사 1건)
 """
 import argparse
 import json
@@ -15,7 +16,7 @@ import unicodedata
 from collections import Counter
 from pathlib import Path
 
-HERE = Path(__file__).resolve().parent
+HERE = Path(__file__).resolve().parents[3]  # 프로젝트 최상위 폴더
 DEFAULT_DATA = HERE.parent / "트라이톤 공모전" / "data" / "146.낚시성 기사 탐지 데이터" / "01-1.정식개방데이터"
 SPLITS = {"train": "Training", "valid": "Validation"}
 
@@ -73,7 +74,7 @@ def parse(path, folder):
 def main():
     ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
     ap.add_argument("--data-dir", type=Path, default=DEFAULT_DATA, help="01-1.정식개방데이터 폴더 경로")
-    ap.add_argument("--out-dir", type=Path, default=HERE / "data")
+    ap.add_argument("--out-dir", type=Path, default=HERE / "09_데이터" / "interim")
     ap.add_argument("--category", default="PO", help="PO 정치, EC 경제, SO 사회, LC 생활문화, IS 세계, GB IT과학, ET 연예")
     ap.add_argument("--limit", type=int, default=0, help="폴더마다 읽을 최대 건수 (0이면 전체)")
     args = ap.parse_args()
@@ -88,7 +89,7 @@ def main():
         if not folders:
             raise SystemExit(f"'{args.category}' 분야 폴더가 없습니다: {label_dir}")
 
-        out_path = args.out_dir / f"{args.category}_{split}.jsonl"
+        out_path = args.out_dir / f"aihub_clickbait__{args.category}_{split}.jsonl"
         seen, stats, failed = set(), Counter(), 0
         with open(out_path, "w", encoding="utf-8") as out:
             for folder in folders:

@@ -1,0 +1,80 @@
+# 데이터셋 등록부. 데이터를 받기 전에 여기에 먼저 적는다.
+#
+# role: claim(검증받는 쪽, 질문) / evidence(근거 자료) / train(모델 학습·평가용 라벨 데이터)
+# status: candidate(후보) / in_use(수집 중) / dropped(안 씀)
+# 확인하지 못한 항목은 "미확인"으로 두고 추측해서 적지 않는다.
+
+datasets:
+  - id: news_press
+    name: "언론사 정치 섹션 기사 (9곳)"
+    source: collected
+    role: claim
+    status: in_use
+    access: "직접 수집 (robots.txt 확인, 사이트당 1.5초 간격)"
+    collector: "10_구현/src/collectors/news_press.py"
+    terms: "기사 저작권은 각 언론사. 내부 분석용으로만 쓰고 공개하지 않는다"
+    notes: "포함·제외 언론사와 이유는 12_기준/rules/collection-rules.md"
+
+  - id: assembly_bills
+    name: "국회의원 발의법률안 (처리 상태 포함)"
+    source: open_assembly
+    role: evidence
+    status: in_use
+    access: "Open API nzmimeepazxkubdpn (ASSEMBLY_KEY, 없으면 5건)"
+    collector: "10_구현/src/collectors/assembly_bills.py"
+    terms: 미확인
+    url: "https://open.assembly.go.kr"
+
+  - id: assembly_votes
+    name: "의안별 본회의 표결현황 (재적·찬성·반대·기권)"
+    source: open_assembly
+    role: evidence
+    status: in_use
+    access: "Open API ncocpgfiaoituanbr (ASSEMBLY_KEY, 없으면 5건)"
+    collector: "10_구현/src/collectors/assembly_votes.py"
+    terms: 미확인
+    url: "https://open.assembly.go.kr"
+    notes: "BILL_NAME에 '(OOO의원 등 N인)'이 붙어 assembly_bills와 이름이 다르다. BILL_ID로 연결한다"
+
+  - id: law_current
+    name: "현행 법령 (최근 공포분 목록과 본문)"
+    source: law_go_kr
+    role: evidence
+    status: in_use
+    access: "Open API lawSearch/lawService target=law (LAW_OC, 등록 IP에서만)"
+    collector: "10_구현/src/collectors/law_current.py"
+    terms: "출처 표시 의무 (open.law.go.kr 안내)"
+    url: "https://open.law.go.kr"
+    notes: "기본은 최근 7일 공포분. 전체 현행법령을 한 번에 받는 것은 호출량이 커서 하지 않았다"
+
+  - id: law_detc
+    name: "헌법재판소 결정례 (목록과 본문)"
+    source: law_go_kr
+    role: evidence
+    status: in_use
+    access: "Open API lawSearch/lawService target=detc (LAW_OC, 등록 IP에서만)"
+    collector: "10_구현/src/collectors/law_detc.py"
+    terms: "출처 표시 의무 (open.law.go.kr 안내)"
+    url: "https://open.law.go.kr"
+    notes: "본문은 type=JSON이면 HTML이 와서 XML로 받는다"
+
+  - id: policy_news
+    name: "정책브리핑 정책뉴스 (보도자료 포함 여부 미확인)"
+    source: data_go_kr
+    role: evidence
+    status: candidate
+    access: "Open API 1371000/policyNewsService2/policyNewsList2 (DATA_GO_KR_KEY 미발급)"
+    collector: 없음
+    terms: "공공누리 1유형 (출처표시)"
+    url: "https://www.data.go.kr/data/15095335/openapi.do"
+    notes: "보도자료 전용 API(pressReleaseService)는 폐기됨. 정책브리핑 사이트 직접 수집은 본문이 첨부파일이라 66건 중 2건만 성공"
+
+  - id: aihub_clickbait
+    name: "AI Hub 낚시성 기사 탐지 데이터 (정치 PO)"
+    source: aihub
+    role: train
+    status: in_use
+    access: "트라이톤 공모전 폴더의 원본에서 변환"
+    collector: "10_구현/src/pipeline/aihub_clickbait.py"
+    terms: "AI Hub 이용약관 (외부 공개 금지 조건 미확인)"
+    notes: "clickbaitClass 0=낚시성, 1=정상. 정치 train 79,820건 / valid 9,977건. 사실 여부가 아니라 제목-본문 불일치 라벨이다"

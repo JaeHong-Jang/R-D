@@ -7,7 +7,8 @@
     python crawl_news.py --sites 뉴시스 한겨레   # 고른 언론사만
     python crawl_news.py --list                # 언론사 목록 보기
 
-결과: data/news_politics.csv (한 행에 기사 1건, 엑셀에서 바로 열림). 다시 실행하면 새 기사만 덧붙인다.
+결과: 09_데이터/raw/collected/news_press/<수집일>/articles.csv (한 행에 기사 1건, 엑셀에서 바로 열림).
+이전 수집일 폴더에 이미 있는 기사는 건너뛰고, 같은 날 다시 실행하면 그날 파일에 덧붙인다.
 
 지키는 것: 각 사이트 robots.txt가 막은 주소는 건너뛰고, 같은 사이트에는 --delay 초 간격으로만 요청한다.
 수집한 본문은 저작권이 언론사에 있으므로 내부 분석용으로만 쓰고 공개 저장소에 올리지 않는다.
@@ -16,6 +17,7 @@ import argparse
 import csv
 import html
 import re
+import sys
 import time
 import urllib.robotparser
 from datetime import datetime
@@ -26,8 +28,11 @@ import lxml.html
 import requests
 import trafilatura
 
-USER_AGENT = "student-research-crawler/0.1 (university R&D project; politics news analysis)"
-OUT = Path(__file__).resolve().parent / "data" / "news_politics.csv"
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+import config  # noqa: E402
+from config import USER_AGENT  # noqa: E402
+
+DATASET_ID = "news_press"
 FIELDS = ["url", "media", "category", "title", "date", "author", "content", "collected_at"]
 
 # list: 정치 섹션 목록 주소 ({page}는 쪽 번호), article: 기사 주소 형식(정규식)
@@ -152,7 +157,6 @@ def main():
     ap.add_argument("--sites", nargs="*", default=list(SITES), help="수집할 언론사 (기본: 전체)")
     ap.add_argument("--pages", type=int, default=3, help="언론사마다 볼 목록 쪽수")
     ap.add_argument("--delay", type=float, default=1.5, help="같은 사이트 요청 사이 간격(초)")
-    ap.add_argument("--out", type=Path, default=OUT)
     ap.add_argument("--list", action="store_true", help="언론사 목록만 출력")
     args = ap.parse_args()
 
@@ -163,17 +167,17 @@ def main():
     if unknown:
         raise SystemExit(f"목록에 없는 언론사: {unknown}  (--list 로 확인)")
 
-    args.out.parent.mkdir(parents=True, exist_ok=True)
+    out_path = config.raw_dir("collected", DATASET_ID) / "articles.csv"
     seen = set()
-    if args.out.exists():
-        with open(args.out, encoding="utf-8-sig", newline="") as f:
-            seen = {row["url"] for row in csv.DictReader(f)}
+    for old in (config.DATA / "raw" / "collected" / DATASET_ID).glob("*/articles.csv"):  # 모든 수집일의 기사
+        with open(old, encoding="utf-8-sig", newline="") as f:
+            seen |= {row["url"] for row in csv.DictReader(f)}
     print(f"이미 수집된 기사 {len(seen):,}건")
 
     fetcher = Fetcher(args.delay)
     total = 0
-    is_new = not args.out.exists()
-    with open(args.out, "a", encoding="utf-8-sig", newline="") as out:  # utf-8-sig: 엑셀에서 한글이 깨지지 않게
+    is_new = not out_path.exists()
+    with open(out_path, "a", encoding="utf-8-sig", newline="") as out:  # utf-8-sig: 엑셀에서 한글이 깨지지 않게
         writer = csv.DictWriter(out, fieldnames=FIELDS)
         if is_new:
             writer.writeheader()
@@ -206,7 +210,8 @@ def main():
                     saved += 1
             total += saved
             print(f"[{site}] 새로 저장 {saved}건, 이미 있음 {skipped}건, 다른 분야 {other}건, 실패 {failed}건", flush=True)
-    print(f"완료: 새 기사 {total:,}건 → {args.out}")
+    print(f"완료: 새 기사 {total:,}건 → {out_path}")
+    return total
 
 
 if __name__ == "__main__":
