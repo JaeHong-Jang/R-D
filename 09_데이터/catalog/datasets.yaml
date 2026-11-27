@@ -59,15 +59,15 @@ datasets:
     notes: "본문은 type=JSON이면 HTML이 와서 XML로 받는다"
 
   - id: policy_news
-    name: "정책브리핑 정책뉴스 (보도자료 포함 여부 미확인)"
+    name: "정책브리핑 정책뉴스 (부처별 정책 기사, 본문 포함)"
     source: data_go_kr
     role: evidence
-    status: candidate
-    access: "Open API 1371000/policyNewsService2/policyNewsList2 (DATA_GO_KR_KEY 미발급)"
-    collector: 없음
+    status: in_use
+    access: "Open API 1371000/policyNewsService2/policyNewsList2 (DATA_GO_KR_KEY, 조회 기간 3일 이내, 하루 1,000회)"
+    collector: "10_구현/src/collectors/policy_news.py"
     terms: "공공누리 1유형 (출처표시)"
     url: "https://www.data.go.kr/data/15095335/openapi.do"
-    notes: "보도자료 전용 API(pressReleaseService)는 폐기됨. 정책브리핑 사이트 직접 수집은 본문이 첨부파일이라 66건 중 2건만 성공"
+    notes: "2026-11-27 하루 10건, GroupingCode는 모두 policy(보도자료 없음). 보도자료 전용 API(pressReleaseService)는 폐기됨. 정책브리핑 사이트 직접 수집은 본문이 첨부파일이라 66건 중 2건만 성공"
 
   - id: aihub_clickbait
     name: "AI Hub 낚시성 기사 탐지 데이터 (정치 PO)"

@@ -21,6 +21,7 @@
 | `collected` | 언론사 정치 섹션 직접 수집 | `news_press` |
 | `open_assembly` | 열린국회정보 Open API | `assembly_bills`, `assembly_votes` |
 | `law_go_kr` | 국가법령정보 공동활용 Open API | `law_current`, `law_detc` |
+| `data_go_kr` | 공공데이터포털 (정책브리핑 정책뉴스) | `policy_news` |
 | `aihub` | AI Hub 낚시성 기사 탐지 데이터 | 원본이 커서 트라이톤 공모전 폴더에서 바로 읽는다 |
 
 - 데이터셋ID는 `catalog/datasets.yaml`의 `id`와 같아야 한다.

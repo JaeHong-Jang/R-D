@@ -64,10 +64,10 @@ evals:
 quality_gates:
   domain_selected: true                    # 정치 (2026-11-26)
   news_collector_working: true             # 언론사 9곳
-  assembly_collector_working: true         # 키 없이 5건 시험만 확인
-  assembly_key_registered: false           # .env ASSEMBLY_KEY
+  assembly_collector_working: true         # 22대 의안 21,299건, 표결 1,918건 (2026-11-28)
+  assembly_key_registered: true
   law_collector_working: true              # 현행법령·헌재결정례
-  policy_briefing_collector_working: false # 정책뉴스 API 키 미발급
+  policy_briefing_collector_working: true  # 정책뉴스만. 보도자료는 없음
   daily_schedule_registered: false         # Windows 작업 스케줄러
   judgment_criteria_written: false
   gold_set_100_written: false
@@ -90,8 +90,8 @@ risks:
     control: "인증 실패 메시지가 나오면 open.law.go.kr 마이페이지에서 IP를 다시 등록한다."
   - id: "R-004"
     status: "open"
-    risk: "정책브리핑 보도자료 전용 API가 공공데이터포털에서 사라졌다. 정책뉴스 API에 보도자료가 들어 있는지 모른다."
-    control: "data.go.kr 키를 받아 하루치를 호출해 GroupingCode 분포를 본다."
+    risk: "정책브리핑 보도자료 전용 API가 공공데이터포털에서 사라졌다. 정책뉴스 API에는 보도자료가 없다(2026-11-26~27 확인, 모두 policy)."
+    control: "정부 발표 근거는 정책뉴스로 대신한다. 보도자료 원문이 꼭 필요하면 부처별 보도자료 API를 따로 찾는다."
   - id: "R-005"
     status: "open"
     risk: "포괄적 뉴스는 성능이 떨어진다(회사 미팅). 정치 기사 대부분은 의견·전망이라 기관 자료로 판정할 수 없다."

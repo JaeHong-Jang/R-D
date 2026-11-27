@@ -2,6 +2,9 @@
 
 ## 2026-11-28
 
+- 국회·공공데이터포털 키 등록. 22대 국회 의안 21,299건, 표결 1,918건 수집.
+- 정책뉴스 수집기 `policy_news.py` 추가, 최근 90일 677건 수집. 보도자료는 들어 있지 않음(모두 policy).
+- 수집기 오류 메시지에서 인증키가 든 주소를 빼고, 정책뉴스는 연결이 끊기면 세 번까지 다시 시도하게 함.
 - 서울 야간경제 해커톤의 하네스 폴더 체계를 들여왔다. 본선 자리는 `08_코칭`으로 바꿨다 (D-004).
 - 파일 이동: `crawl_news.py` → `10_구현/src/collectors/news_press.py`, `build_dataset.py` → `10_구현/src/pipeline/aihub_clickbait.py`, `collect_evidence.py` → `assembly_bills.py`·`assembly_votes.py`로 나눔.
 - 데이터 이동: `data/news_politics.csv` → `09_데이터/raw/collected/news_press/2026-11-27/articles.csv`, `data/PO_*.jsonl` → `09_데이터/interim/aihub_clickbait__PO_*.jsonl`.

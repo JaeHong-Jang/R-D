@@ -27,9 +27,12 @@ def oc():
 def get(path, **params):
     """한 번 호출해 응답 본문(문자열)을 돌려준다. 인증 실패도 HTTP 200으로 오므로 본문으로 확인한다."""
     time.sleep(DELAY)
-    r = requests.get(API + path, params={"OC": oc(), **params},
-                     headers={"User-Agent": config.USER_AGENT}, timeout=60)
-    r.raise_for_status()
+    try:
+        r = requests.get(API + path, params={"OC": oc(), **params},
+                         headers={"User-Agent": config.USER_AGENT}, timeout=60)
+        r.raise_for_status()
+    except requests.RequestException as e:  # 원래 오류 메시지에는 인증값이 든 주소가 있어 이름만 남긴다
+        raise RuntimeError(f"법제처 API 연결 실패 ({path}): {type(e).__name__}") from None
     if "사용자 정보 검증에 실패" in r.text:
         raise RuntimeError("법제처 인증 실패: 등록한 IP와 지금 IP가 다른지 확인하세요 (open.law.go.kr 마이페이지)")
     return r.text

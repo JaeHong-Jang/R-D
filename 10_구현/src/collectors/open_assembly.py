@@ -22,8 +22,11 @@ def fetch(code, age, page, key):
     params = {"Type": "json", "AGE": age, "pIndex": page, "pSize": PAGE_SIZE}
     if key:
         params["KEY"] = key
-    r = requests.get(API + code, params=params, headers={"User-Agent": config.USER_AGENT}, timeout=30)
-    r.raise_for_status()
+    try:
+        r = requests.get(API + code, params=params, headers={"User-Agent": config.USER_AGENT}, timeout=30)
+        r.raise_for_status()
+    except requests.RequestException as e:  # 원래 오류 메시지에는 인증키가 든 주소가 있어 이름만 남긴다
+        raise RuntimeError(f"국회 API 연결 실패 ({code} {page}쪽): {type(e).__name__}") from None
     data = r.json()
     if code not in data:  # 오류와 '데이터 없음'은 HTTP 200에 RESULT만 담겨 온다
         result = data["RESULT"]

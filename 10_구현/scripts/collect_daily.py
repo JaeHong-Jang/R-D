@@ -1,4 +1,4 @@
-"""매일 돌리는 수집 진입점. 뉴스 → 국회 → 법제처 순서로 수집기를 실행하고 결과를 로그에 남긴다.
+"""매일 돌리는 수집 진입점. 뉴스 → 국회 → 법제처 → 정책브리핑 순서로 수집기를 실행하고 결과를 로그에 남긴다.
 
 실행:  python 10_구현/scripts/collect_daily.py
 로그:  09_데이터/raw/collect_log.txt (실행 시각과 수집기별 결과·오류)
@@ -18,6 +18,7 @@ import config  # noqa: E402
 import law_current  # noqa: E402
 import law_detc  # noqa: E402
 import news_press  # noqa: E402
+import policy_news  # noqa: E402
 
 # 수집기 이름과 실행 함수. 뉴스는 명령줄 인자를 쓰므로 기본값으로 실행한다.
 JOBS = [
@@ -26,6 +27,7 @@ JOBS = [
     ("assembly_votes", lambda: assembly_votes.collect()),
     ("law_current", lambda: law_current.collect()),
     ("law_detc", lambda: law_detc.collect()),
+    ("policy_news", lambda: policy_news.collect()),
 ]
 
 
