@@ -18,6 +18,8 @@ cp .env.example .env      # 인증키를 채운다
 ~/venvs/rnd/bin/python 10_구현/scripts/collect_daily.py
 ```
 
+매일 9시·21시에 Windows 작업 스케줄러(`RnD_뉴스수집_0900`, `RnD_뉴스수집_2100`)가 `~/run_rnd_daily.sh`를 통해 `collect_daily.py`를 실행한다. PC가 켜져 있고 로그인돼 있어야 한다. 결과는 `09_데이터/raw/collect_log.txt`.
+
 수집기를 하나씩 돌리려면 `10_구현/src/collectors/` 안의 파일을 직접 실행한다(각 파일 맨 위에 사용법).
 
 ## 폴더 구조

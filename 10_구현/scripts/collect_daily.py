@@ -6,7 +6,7 @@
 """
 import sys
 import traceback
-from datetime import datetime
+from datetime import date, datetime
 from pathlib import Path
 
 SRC = Path(__file__).resolve().parents[1] / "src"
@@ -23,8 +23,9 @@ import policy_news  # noqa: E402
 # 수집기 이름과 실행 함수. 뉴스는 명령줄 인자를 쓰므로 기본값으로 실행한다.
 JOBS = [
     ("news_press", lambda: news_press.main()),
-    ("assembly_bills", lambda: assembly_bills.collect()),
-    ("assembly_votes", lambda: assembly_votes.collect()),
+    # 의안은 오래전 발의된 법안의 처리 상태도 바뀌므로 월요일마다 전체(30쪽)를, 다른 날은 최신 1쪽을 받는다
+    ("assembly_bills", lambda: assembly_bills.collect(30 if date.today().weekday() == 0 else 1)),
+    ("assembly_votes", lambda: assembly_votes.collect(5)),  # 표결은 전체가 2천 건 남짓이라 매번 전체를 받는다
     ("law_current", lambda: law_current.collect()),
     ("law_detc", lambda: law_detc.collect()),
     ("policy_news", lambda: policy_news.collect()),

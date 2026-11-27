@@ -51,7 +51,8 @@ artifacts:
   dataset_catalog: "09_데이터/catalog/datasets.yaml"
   ddbm_canvas: "01_전략/DDBM_캔버스_초안.md"   # 정치 분야로 좁히기 전 초안. 갱신 필요
   # 아래는 앞으로 작성
-  judgment_criteria: "12_기준/docs/02_judgment_criteria.md"   # 거짓·사실 판정 기준
+  judgment_criteria: "12_기준/docs/02_judgment_criteria.md"   # 거짓·사실 판정 기준 (초안)
+  gold_candidates: "09_데이터/processed/gold__candidates.csv"  # 규칙으로 뽑은 후보, 라벨 칸 비어 있음
   gold_set: "09_데이터/processed/gold__claims_evidence.csv"    # 주장-근거 정답셋 (사람이 작성)
 
 rules:
@@ -68,8 +69,9 @@ quality_gates:
   assembly_key_registered: true
   law_collector_working: true              # 현행법령·헌재결정례
   policy_briefing_collector_working: true  # 정책뉴스만. 보도자료는 없음
-  daily_schedule_registered: false         # Windows 작업 스케줄러
-  judgment_criteria_written: false
+  daily_schedule_registered: true          # Windows 작업 RnD_뉴스수집_0900·2100 → ~/run_rnd_daily.sh (2026-11-28)
+  judgment_criteria_written: false        # 초안 12_기준/docs/02_judgment_criteria.md, 팀 확정 전
+  gold_candidates_extracted: true          # 09_데이터/processed/gold__candidates.csv
   gold_set_100_written: false
   candidate_models_compared: false
   prototype_working: false
